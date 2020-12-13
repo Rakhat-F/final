@@ -8,8 +8,9 @@ public class PlayerController : MonoBehaviour
     public Transform playerCam;
     public Transform orientation;
     public Transform gravity_orientation;
-    public LayerMask whatIsWallkable;
+    public LayerMask whatIsGround;
     public Transform player;
+
     
     //RB
     private Rigidbody rb;
@@ -94,10 +95,10 @@ public class PlayerController : MonoBehaviour
         float multiplier = 1f, multiplierV = 1f;
 
         // Movement in air
-        if (!grounded && !wallWalking)
+        if (!grounded)
         {
-            multiplier = 0f;
-            multiplierV = 0f;
+            multiplier = 0.2f;
+            multiplierV = 0.2f;
         }
 
         //Apply forces to move player
@@ -169,7 +170,7 @@ public class PlayerController : MonoBehaviour
 
     private void CheckGround()
     {
-        if (Physics.Raycast(gravity_orientation.position, -gravity_orientation.up, 2, whatIsWallkable))
+        if (Physics.Raycast(gravity_orientation.position, -gravity_orientation.up, 2, whatIsGround))
         {
             grounded = true;
         }

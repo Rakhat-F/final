@@ -54,7 +54,8 @@ public class Pick : MonoBehaviour
                 lastRotation = takenObject.transform.rotation.eulerAngles;
                 lastRotationY = lastRotation.y - mainCamera.transform.eulerAngles.y;
                 takenObject.transform.transform.parent = targetForTakenObjects;
-
+                takenObject.transform.localRotation = Quaternion.Lerp(takenObject.transform.localRotation,
+                Quaternion.Euler(0, 0, 0), Time.deltaTime * 100);
 
                 takenObject.GetComponent<Rigidbody>().isKinematic = true;   
 
@@ -88,7 +89,7 @@ public class Pick : MonoBehaviour
                     takenObjSize = takenObject.GetComponent<Collider>().bounds.size.z;
                     takenObjSizeIndex = 2;
                 }
-            }  
+            }
             
         }
 
@@ -96,6 +97,7 @@ public class Pick : MonoBehaviour
         {
             if (takenObject != null)
             {
+                
                 if (takenObject.GetComponent<MeshRenderer>() != null)
                 {
                     centerCorrection = takenObject.transform.position - takenObject.GetComponent<MeshRenderer>().bounds.center;
@@ -104,9 +106,9 @@ public class Pick : MonoBehaviour
                 if (Input.GetMouseButton(1))
                 {
                     
+                    
                     takenObject.transform.rotation = Quaternion.Euler(new Vector3(0, Input.GetAxis("Mouse Y"), 0));
                 }
-                
                 takenObject.transform.position = Vector3.Lerp(takenObject.transform.position, targetForTakenObjects.position + centerCorrection, Time.deltaTime * 100);
 
                 takenObject.GetComponent<Collider>().isTrigger = true;
@@ -116,7 +118,7 @@ public class Pick : MonoBehaviour
                 
                 takenObjSize = takenObject.GetComponent<Collider>().bounds.size[takenObjSizeIndex];
 
-                positionCalculation = (hit.distance * takenObjSize / 6) / (cameraHeight);       
+                positionCalculation = (hit.distance * takenObjSize / 2) / (cameraHeight);       
                 
                 if (positionCalculation < rayMaxRange)
                 {
@@ -132,8 +134,7 @@ public class Pick : MonoBehaviour
                     lastHitPoint = mainCamera.transform.position + ray.direction * rayMaxRange;
                 }
 
-                targetForTakenObjects.position = Vector3.Lerp(targetForTakenObjects.position, lastHitPoint
-                        - (ray.direction * lastPositionCalculation), Time.deltaTime * 10000000000);
+                targetForTakenObjects.position = lastHitPoint - (ray.direction * lastPositionCalculation);
 
                 takenObject.transform.localScale = scaleMultiplier * (Vector3.Distance(mainCamera.transform.position, takenObject.transform.position) / distanceMultiplier);
             }
